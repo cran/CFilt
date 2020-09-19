@@ -4,10 +4,14 @@
 \alias{CFbuilder}
 \title{A function to create and build a CF class object}
 \usage{
-CFbuilder(Data)
+CFbuilder(Data, sim_user, sim_item)
 }
 \arguments{
 \item{Data}{A data frame by style: User ID - Item ID - Ratings, or a Utility Matrix.}
+
+\item{sim_user}{A methodology used to estimate the rating by users similarity. Can be 'cos','pearson','both' or 'none'. If it equals 'cos', the SU1 will be built. If it equals 'pearson', the SU2 will be built. If it equals 'both', the SU1 and SU2 will be built. If it equals 'none', nothing will be built.}
+
+\item{sim_item}{A methodology used to estimate the rating by itens similarity. Can be 'cos','adjcos','both' or 'none'. If it equals 'cos', the SI1 will be built. If it equals 'adjcos', the SI2 will be built. If it equals 'both', the SI1 and SI2 will be built. If it equals 'none', nothing will be built.}
 }
 \value{
 a CF class object.
@@ -21,7 +25,7 @@ the object, the progress percentage is shown. Step 1: Building the MU and vector
 }
 \examples{
 ratings<-movies[1:1000,]
-objectCF<-CFbuilder(Data = ratings)
+objectCF<-CFbuilder(Data = ratings, sim_user = "pearson", sim_item = "adjcos")
 }
 \references{
 LINDEN, G.; SMITH, B.; YORK, J. Amazon. com recommendations: Item-to-item collaborative filtering. Internet Computing, IEEE, v. 7, n. 1, p. 76-80,2003

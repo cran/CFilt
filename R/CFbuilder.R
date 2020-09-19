@@ -7,8 +7,10 @@
 #'the number of user ratings, a vector with the number of ratings received for the items, a vector with the average ratings of each user and another
 #'vector with the average ratings received from each item. If Data is the Utility Matrix, it also constructs all matrices and vectors. When building
 #'the object, the progress percentage is shown. Step 1: Building the MU and vectors. Step 2: Building the SU. Step 3: Building the SI.
-#'@usage CFbuilder(Data)
+#'@usage CFbuilder(Data, sim_user, sim_item)
 #'@param Data A data frame by style: User ID - Item ID - Ratings, or a Utility Matrix.
+#'@param sim_user A methodology used to estimate the rating by users similarity. Can be 'cos','pearson','both' or 'none'. If it equals 'cos', the SU1 will be built. If it equals 'pearson', the SU2 will be built. If it equals 'both', the SU1 and SU2 will be built. If it equals 'none', nothing will be built.
+#'@param sim_item A methodology used to estimate the rating by itens similarity. Can be 'cos','adjcos','both' or 'none'. If it equals 'cos', the SI1 will be built. If it equals 'adjcos', the SI2 will be built. If it equals 'both', the SI1 and SI2 will be built. If it equals 'none', nothing will be built.
 #'@author Thiago Lima, Jessica Kubrusly.
 #'@return a CF class object.
 #'@references
@@ -19,10 +21,50 @@
 #'@export
 #'@examples
 #'ratings<-movies[1:1000,]
-#'objectCF<-CFbuilder(Data = ratings)
-CFbuilder <- function(Data){
-  if(is.data.frame(Data)){
+#'objectCF<-CFbuilder(Data = ratings, sim_user = "pearson", sim_item = "adjcos")
+CFbuilder <- function(Data, sim_user = "pearson", sim_item = "adjcos"){
 
+
+  cal_SU1=F
+  cal_SU2=F
+  cal_SI1=F
+  cal_SI2=F
+  if(sim_user == "both"){
+    cal_SU1=TRUE
+    cal_SU2=TRUE
+  }
+  if(sim_user=="cos"){cal_SU1=TRUE}
+  if(sim_user=="pearson"){cal_SU2=TRUE}
+  if(sim_user=="none"){
+    cal_SU1=F
+    cal_SU2=F
+  }
+  if(sim_user!="cos" && sim_user!="pearson" && sim_user!="both" && sim_user!="none" ){
+    stop("sim_user can be only 'cos', 'pearson','both' or 'none'.")
+  }
+
+
+
+  if(sim_item == "both"){
+    cal_SI1=TRUE
+    cal_SI2=TRUE
+  }
+  if(sim_item=="cos"){cal_SI1=TRUE}
+  if(sim_item=="adjcos"){cal_SI2=TRUE}
+  if(sim_item=="none"){
+    cal_SI1=F
+    cal_SI1=F
+  }
+  if(sim_item!="cos" && sim_item!="adjcos" && sim_item!="both" && sim_item!="none" ){
+    stop("sim_user can be only 'cos', 'adjcos','both' or 'none'.")
+  }
+
+
+
+
+
+  if(is.data.frame(Data)){
+    obj_FC<-CF()
 
     Data<-as.data.frame(Data)
     #padrao da Data
@@ -77,12 +119,18 @@ CFbuilder <- function(Data){
     }
     close(pb)
 
+    obj_FC$MU=MU
+    obj_FC$averages_u=averages_u
+    obj_FC$averages_i=averages_i
+    obj_FC$n_aval_u=n_aval_u
+    obj_FC$n_aval_i=n_aval_i
 
-    #Criar SU1 - Coeficiente Cosseno:
     message("Step 2 of 3: Building SU")
     pb <- txtProgressBar(min = 0, max = 2*m, style = 3)
 
-    SU1=matrix(0,m,m,dimnames = list(nome_u,nome_u))
+    if(cal_SU1 == TRUE){
+    #Criar SU1 - Coeficiente Cosseno:
+    SU1=matrix(NA,m,m,dimnames = list(nome_u,nome_u))
     for(i in 1:m){
       setTxtProgressBar(pb, i)
       for(j in i:m){
@@ -90,17 +138,16 @@ CFbuilder <- function(Data){
           SU1[i,j]<-sum(MU[i,]*MU[j,],na.rm = T)/(sqrt(sum((MU[i,])^2,na.rm = T))*sqrt(sum((MU[j,])^2,na.rm = T)))
 
         }
+        if(j==i){SU1[i,j]<-1}
       }
     }
 
-
-
-
-
+    obj_FC$SU1=SU1
+  }
 
     #Criar SU2 - Coeficiente de Person:
-
-    SU2=matrix(0,m,m,dimnames = list(nome_u,nome_u))
+if(cal_SU2==TRUE){
+    SU2=matrix(NA,m,m,dimnames = list(nome_u,nome_u))
 
     for(i in 1:m){
       setTxtProgressBar(pb,(m+i))
@@ -112,42 +159,62 @@ CFbuilder <- function(Data){
         if(j!= i){
           SU2[i,j]<-sum((MU[i,]-averages_u[i])*(MU[j,]-averages_u[j]),na.rm = T)/(sqrt(sum((MU[i,]-averages_u[i])^2,na.rm = T))*sqrt(sum((MU[j,]-averages_u[j])^2,na.rm = T)))
         }
+        if(j==i){SU2[i,j]<-1}
       }
     }
+
+
+    obj_FC$SU2=SU2
+}
+    setTxtProgressBar(pb,2*m)
     close(pb)
 
 
-
-    #Criar SI2 - Cosseno Ajustado
     message("Step 3 of 3: Building SI")
-    SI2=matrix(0,n,n,dimnames = list(nome_i,nome_i))
+
     pb <- txtProgressBar(min = 0, max = 2*n, style = 3)
+
+
+    if(cal_SI2==TRUE){
+    #Criar SI2 - Cosseno Ajustado
+    SI2=matrix(NA,n,n,dimnames = list(nome_i,nome_i))
     for(i in 1:n){
       setTxtProgressBar(pb, i)
 
       for(j in i:n){
-        if(j!= i)
-          SI2[i,j]=sum((MU[,i]-averages_u[i])*(MU[,j]-averages_u[j]),na.rm = T)/(sqrt(sum((MU[,i]-averages_u[i])^2,na.rm = T))*sqrt(sum((MU[,j]-averages_u[j])^2,na.rm = T)))
+        if(j!= i){
+          SI2[i,j]=sum((MU[,i]-averages_u)*(MU[,j]-averages_u),na.rm = T)/(sqrt(sum((MU[,i]-averages_u)^2,na.rm = T))*sqrt(sum((MU[,j]-averages_u)^2,na.rm = T)))
+        }
+        if(j==i){SI2[i,j]<-1}
       }
     }
 
+    obj_FC$SI2=SI2
+    }
+
+
+    if(cal_SI1==TRUE){
 
     #Criar SI1 - Distancia Cosseno normal
-    SI1 = matrix(0,n,n,dimnames=list(nome_i,nome_i))
+    SI1 = matrix(NA,n,n,dimnames=list(nome_i,nome_i))
     for(i in 1:n){
       setTxtProgressBar(pb, (n+i))
       for(j in i:n){
         if(j!=i){
           SI1[i,j] = sum(MU[,i]*MU[,j],na.rm=T)/(sqrt(sum((MU[,i])^2,na.rm=T))*sqrt(sum((MU[,j])^2,na.rm=T)))
         }
+        if(j==i){SI1[i,j]<-1}
       }
     }
+
+    obj_FC$SI1=SI1
+    }
+    setTxtProgressBar(pb,2*n)
     close(pb)
 
 
 
 
-    obj_FC=CF(MU=MU,averages_u=averages_u,averages_i=averages_i,n_aval_i=n_aval_i,n_aval_u=n_aval_u,SI1=SI1,SI2=SI2,SU1=SU1,SU2=SU2)
     return(obj_FC)
 
 
@@ -176,69 +243,92 @@ CFbuilder <- function(Data){
 
 
 
-    #Criar SU1 - Similaridade Cosseno :
+
     message("Step 1 of 2: Building SU")
-    SU1=matrix(0,M,M,dimnames = list(rownames(Data),rownames(Data)))
     pb <- txtProgressBar(min = 0, max = 2*M, style = 3)
+
+if(cal_SU1==TRUE){
+    #Criar SU1 - Similaridade Cosseno :
+    SU1=matrix(NA,M,M,dimnames = list(rownames(Data),rownames(Data)))
     for(i in 1:M){
       setTxtProgressBar(pb, i)
       for(j in i:M){
         if(j!= i){
           SU1[i,j]<-sum(MU[i,]*MU[j,],na.rm = T)/(sqrt(sum((MU[i,])^2,na.rm = T))*sqrt(sum((MU[j,])^2,na.rm = T)))
         }
+        if(j==i){SU1[i,j]<-1}
 
 
       }
     }
+    obj_FC$SU1=SU1
+}
+
+    if(cal_SU2==TRUE){
     #Criar SU2 - Adjusted Cosseno :
-    SU2=matrix(0,M,M,dimnames = list(rownames(Data),rownames(Data)))
+    SU2=matrix(NA,M,M,dimnames = list(rownames(Data),rownames(Data)))
     for(i in 1:M){
       setTxtProgressBar(pb, (M+i))
       for(j in i:M){
         if(j!= i){
           SU2[i,j]<-sum((MU[i,]-averages_u[i])*(MU[j,]-averages_u[j]),na.rm = T)/(sqrt(sum((MU[i,]-averages_u[i])^2,na.rm = T))*sqrt(sum((MU[j,]-averages_u[j])^2,na.rm = T)))
         }
+        if(j==i){SU2[i,j]<-1}
       }
     }
-
-    close(pb)
-    obj_FC$SU1=SU1
     obj_FC$SU2=SU2
+    }
+
+    setTxtProgressBar(pb, 2*M)
+    close(pb)
 
 
-    #Criar SI2 - Cosseno Ajustado
+
     message("Step 2 of 2: Building SI")
     n=dim(MU)[2]
     pb <- txtProgressBar(min = 0, max = 2*n, style = 3)
-    SI2=matrix(0,n,n,dimnames = list(colnames(Data),colnames(Data)))
+
+    if(cal_SI2==TRUE){
+
+    #Criar SI2 - Cosseno Ajustado
+
+    SI2=matrix(NA,n,n,dimnames = list(colnames(Data),colnames(Data)))
     for(i in 1:n){
       setTxtProgressBar(pb, i)
       for(j in i:n){
         if(j!= i){
-          SI2[i,j]=sum((MU[,i]-averages_u[i])*(MU[,j]-averages_u[j]),na.rm = T)/(sqrt(sum((MU[,i]-averages_u[i])^2,na.rm = T))*sqrt(sum((MU[,j]-averages_u[j])^2,na.rm = T)))
+          SI2[i,j]=sum((MU[,i]-averages_u)*(MU[,j]-averages_u),na.rm = T)/(sqrt(sum((MU[,i]-averages_u)^2,na.rm = T))*sqrt(sum((MU[,j]-averages_u)^2,na.rm = T)))
         }
+        if(j==i){SI2[i,j]<-1}
       }
     }
 
+    obj_FC$SI2=SI2
+    }
+
+
+
     #Criar SI1 - Cosseno
 
-    SI1=matrix(0,n,n,dimnames = list(colnames(Data),colnames(Data)))
+
+    if(cal_SI1==TRUE){
+
+    SI1=matrix(NA,n,n,dimnames = list(colnames(Data),colnames(Data)))
     for(i in 1:n){
       setTxtProgressBar(pb, (n+i))
       for(j in i:n){
         if(j!=i){
           SI1[i,j] = sum(MU[,i]*MU[,j],na.rm=T)/(sqrt(sum((MU[,i])^2,na.rm=T))*sqrt(sum((MU[,j])^2,na.rm=T)))
         }
+        if(j==i){SI1[i,j]<-1}
       }
     }
 
-
-
-
+    obj_FC$SI1=SI1
+}
+    setTxtProgressBar(pb, 2*n)
     close(pb)
 
-    obj_FC$SI1=SI1
-    obj_FC$SI2=SI2
 
     return(obj_FC)
 
