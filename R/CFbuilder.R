@@ -74,10 +74,16 @@ CFbuilder <- function(Data, sim_user = "pearson", sim_item = "adjcos"){
     #3a coluna tem um numero (1-5 ou 1-10) com as avalicoes ou 1 ou 0, indicanco se o usuario viu ou nao.
 
     #para saber os nomes e o num de usuarios distintos
-    tab_u = table(as.numeric(as.character(Data[,1])))
-    nome_u = names(tab_u)
-    m = dim(tab_u)
-
+      if(is.numeric(Data[,1])){
+      tab_u = table(as.numeric(as.character(Data[,1])))
+      nome_u = names(tab_u)
+      m = dim(tab_u)
+      }
+      if(is.character(Data[,1])){
+        tab_u = table(as.character(Data[,1]))
+        nome_u = names(tab_u)
+        m = dim(tab_u)
+      }
     #para saber os nomes e o num de itens distintos
     tab_i = table(as.character(Data[,2]))
     nome_i = names(tab_i)

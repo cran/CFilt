@@ -1310,7 +1310,9 @@ if(have_SI1==T){
 
           n_ = length(v_ind)
           if(n_ == 0){
-            stop("It isn't possible to estimate the rating for this user and item.")
+            message("It isn't possible to estimate the rating for this user and item.")
+            return(FALSE)
+
           }
           nota = sum(MU[v_ind,j]*v_valor)/sum(v_valor)
           if(nota>=cuts)
@@ -1352,7 +1354,9 @@ if(have_SI1==T){
 
           n_ = length(v_ind)
           if(n_ == 0){
-            stop("It isn't possible to estimate the rating for this user and item.")
+            message("It isn't possible to estimate the rating for this user and item.")
+            return(FALSE)
+
           }
           nota = averages_u[i] + ((sum((MU[v_ind,j]-averages_u[v_ind])*v_valor))/sum(v_valor))
           nota = as.numeric(nota)
@@ -1407,7 +1411,9 @@ if(have_SI1==T){
 
           n_ = length(v_ind)
           if(n_ == 0){
-            stop("It isn't possible to estimate the rating for this user and item.")
+            message("It isn't possible to estimate the rating for this user and item.")
+            return(FALSE)
+
           }
           nota = sum(MU[i,v_ind]*v_valor)/sum(v_valor)
           if(nota>=cuts)
@@ -1453,7 +1459,8 @@ if(have_SI1==T){
 
           n_ = length(v_ind)
           if(n_ == 0){
-            stop("It isn't possible to estimate the rating for this user and item.")
+            message("It isn't possible to estimate the rating for this user and item.")
+            return(FALSE)
           }
           nota = sum(MU[i,v_ind]*v_valor)/sum(v_valor)
           if(nota>=cuts){
@@ -1633,7 +1640,10 @@ if(have_SI1==T){
 
         }
 
-        if(length(nomes)==0){stop("Sorry, we don't have any items to recommend to this user.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any items to recommend to this user.")
+          return(NA)
+          }
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
@@ -1703,7 +1713,10 @@ if(have_SI1==T){
 
         }
 
-        if(length(nomes)==0){stop("Sorry, we don't have any items to recommend to this user.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any items to recommend to this user.")
+          return(NA)
+        }
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
@@ -1778,7 +1791,10 @@ if(have_SI1==T){
 
         }
 
-        if(length(nomes)==0){stop("Sorry, we don't have any items to recommend to this user.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any items to recommend to this user.")
+          return(NA)
+        }
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
@@ -1851,7 +1867,10 @@ if(have_SI1==T){
 
         }
 
-        if(length(nomes)==0){stop("Sorry, we don't have any items to recommend to this user.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any items to recommend to this user.")
+          return(NA)
+        }
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
@@ -1963,7 +1982,9 @@ if(have_SI1==T){
           v_notas[which.max(v_notas)]  = NA
 
         }
-        if(length(nomes)==0){stop("Sorry, we don't have any users to recommend to this item.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any users to recommend to this item.")
+          return(NA)}
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
@@ -2031,7 +2052,10 @@ if(have_SI1==T){
           v_notas[which.max(v_notas)]  = NA
 
         }
-        if(length(nomes)==0){stop("Sorry, we don't have any users to recommend to this item.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any users to recommend to this item.")
+          return(NA)
+        }
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
@@ -2105,7 +2129,10 @@ if(have_SI1==T){
           v_notas[which.max(v_notas)]  = NA
 
         }
-        if(length(nomes)==0){stop("Sorry, we don't have any users to recommend to this item.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any users to recommend to this item.")
+          return(NA)
+        }
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
@@ -2173,13 +2200,13 @@ if(have_SI1==T){
           v_notas[which.max(v_notas)]  = NA
 
         }
-        if(length(nomes)==0){stop("Sorry, we don't have any users to recommend to this item.")}
+        if(length(nomes)==0){
+          message("Sorry, we don't have any users to recommend to this item.")
+          return(NA)
+          }
         setTxtProgressBar(pb,3)
         close(pb)
         return(nomes)
-
-
-
 
 
       }

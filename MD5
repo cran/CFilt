@@ -1,10 +1,10 @@
-71f269fb4b805623403c201d424b163c *DESCRIPTION
+792a24e03286b7e602a15fa6abdac3a3 *DESCRIPTION
 32cf54f882eb397b6bd4c236505a98b4 *NAMESPACE
-ffa27a2618cd4fa501b7e2010ad1215c *R/CF.R
-26fc42b1d2bec1af2fb65f169a5762b3 *R/CFbuilder.R
+d2c81c7af27378d90d77f2a1358839cd *R/CF.R
+e4f360779638268dab34225daaf8b688 *R/CFbuilder.R
 eccfd3d66a92998e43d7afdc1a96281b *R/CFilt.R
 4b926ba8140c112e3af21f8838b0d64e *R/movies.R
-c7800e75c33405aadac85eb1b5bcd0bd *data/movies.RData
+ce6c2b4aedcba3c4ad74ac547cb957da *data/movies.RData
 ac4b652dc3ab88fff6ec8606bfc9aec6 *man/CF-class.Rd
 213fddf46f83f8bf8dbfc9e3c1e6a2f3 *man/CFbuilder.Rd
 491e3a998cffa56bfc4ff246109850b4 *man/CFilt.Rd
