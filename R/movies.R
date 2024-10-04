@@ -1,7 +1,7 @@
 #' Movie ratings by users
 #'
 #' A dataset containing 7276 ratings for 50 movies by 526 users. This database was created by Giglio (2014).
-#'
+#'   
 #' @format A data frame with 7276 rows and 3 variables:
 #' \describe{
 #'   \item{Id Users}{Users identifier. Numbers 1 to 526. }
@@ -62,5 +62,6 @@
 #'   }
 #'   \item{Ratings}{Movie ratings by users. The ratings follows the Likert scale: 1 to 5.}
 #' }
-#'@references Giglio , J. C. (2014). Recomendação de Filmes Utilizando Filtragem Colaborativa [Recommending Films Using Collaborative Filtering]. Undergraduate thesis - Universidade Federal Fluminense.
+#'
+#'
 "movies"

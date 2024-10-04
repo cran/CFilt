@@ -2,41 +2,59 @@
 % Please edit documentation in R/CFbuilder.R
 \name{CFbuilder}
 \alias{CFbuilder}
-\title{A function to create and build a CF class object}
+\title{The constructor function of the CFilt class.}
 \usage{
-CFbuilder(Data, sim_user, sim_item)
+CFbuilder(Data,Datatype,similarity)
+
+CFbuilder(
+Data,
+Datatype = ifelse(ncol(Data)==2,"consumption","ratings"),
+similarity = ifelse(Datatype == "consumption","jaccard","pearson")
+)
 }
 \arguments{
-\item{Data}{A data frame by style: User ID - Item ID - Ratings, or a Utility Matrix.}
+\item{Data}{a dataframe with 2 or 3 columns. The first column indicates the
+user ID, the second the item ID and the third the rating (only if
+Datatype = 'rating').}
 
-\item{sim_user}{A methodology used to estimate the rating by users similarity. Can be 'cos','pearson','both' or 'none'. If it equals 'cos', the SU1 will be built. If it equals 'pearson', the SU2 will be built. If it equals 'both', the SU1 and SU2 will be built. If it equals 'none', nothing will be built.}
+\item{Datatype}{a character that indicates the data type: 'rating' or
+'consumption'.}
 
-\item{sim_item}{A methodology used to estimate the rating by itens similarity. Can be 'cos','adjcos','both' or 'none'. If it equals 'cos', the SI1 will be built. If it equals 'adjcos', the SI2 will be built. If it equals 'both', the SI1 and SI2 will be built. If it equals 'none', nothing will be built.}
+\item{similarity}{a character that indicates the similarity type.
+For 'datatype='ratings', 'cossine' or 'person'. For datatype='consumption',
+'jaccard'.}
 }
 \value{
 a CF class object.
 }
 \description{
-A CF class object constructor. This function can perform two procedures: If Data is a data frame, style: User Id - Item Id - Ratings, it creates
-and builds an FC class object from the data frame, containing a Utility Matrix, a User Similarity Matrix, an Item Similarity Matrix, a vector with
-the number of user ratings, a vector with the number of ratings received for the items, a vector with the average ratings of each user and another
-vector with the average ratings received from each item. If Data is the Utility Matrix, it also constructs all matrices and vectors. When building
-the object, the progress percentage is shown. Step 1: Building the MU and vectors. Step 2: Building the SU. Step 3: Building the SI.
+The constructor function of the CFilt class.
 }
 \examples{
-ratings<-movies[1:1000,]
-objectCF<-CFbuilder(Data = ratings, sim_user = "pearson", sim_item = "adjcos")
+CF1 <- CFbuilder(Data = movies[1:300,], Datatype = "ratings", 
+similarity = "pearson") #or
+CF1_ <- CFbuilder(Data = movies[1:300,])
+CF2 <- CFbuilder(Data = movies[1:300,], Datatype = "ratings", 
+similarity = "cosine") #or
+CF2_ <- CFbuilder(Data = movies[1:300,], similarity = "cosine")
+CF3 <- CFbuilder(Data = movies[1:300,-3], Datatype = "consumption", 
+similarity = "jaccard") #or
+CF3_ <- CFbuilder(Data = movies[1:300,-3])
 }
 \references{
-LINDEN, G.; SMITH, B.; YORK, J. Amazon. com recommendations: Item-to-item collaborative filtering. Internet Computing, IEEE, v. 7, n. 1, p. 76-80,2003
+LINDEN, G.; SMITH, B.; YORK, J. Amazon. com recommendations: Item-to-item
+collaborative filtering. Internet Computing, IEEE, v. 7, n. 1, p. 76-80,2003
 }
 \seealso{
 \code{\link[CFilt]{CF-class}}
 }
 \author{
-Thiago Lima, Jessica Kubrusly.
+Jessica Kubrusly
 }
-\keyword{Class}
-\keyword{Collaborative}
-\keyword{Filtering}
-\keyword{Refference}
+\keyword{"Collaborative}
+\keyword{"Cosine}
+\keyword{"Jaccard}
+\keyword{"Pearson}
+\keyword{Filtering"}
+\keyword{Silimarity"}
+\keyword{Similarity"}

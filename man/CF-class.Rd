@@ -4,164 +4,234 @@
 \name{CF-class}
 \alias{CF-class}
 \alias{CF}
-\title{A Reference Class to represent a object CF}
+\title{Recommendation by Collaborative Filtering}
 \description{
-A class of objects created structured with the following objects: the MU - Utility Matrix, the SU1 and SU2 - Matrices of Similarity
-between Users, the SI1 e SI2 - Matrices of Similarity between Items, and the vectors averages_u, averages_i, n_aval_u and n_aval_i. The class
-contains methods, general functions with the objectives of manipulating the data and making recommendations, from the structures
-present in the class. The data manipulation methods comprise addsimilarity, addnewuser, addnewemptyuser, deleteuser, addnewitem, addnewemptyitem, deleteitem, newrating and deleterating,
-while the recommendations methods recommend, kclosestitems, topkusers, topkitems are created through choices available in the
-Collaborative Filtering methodology. All objects and methods are accessed through the "$" character. A CF class object is created through
-the CFbuilder function.
+CF is a class of objects that stores
+information about a recommendation system. This information includes the
+consumption or rating of each (user, item) pair in the utility matrix MU, the
+similarities between each pair of users in the similarity matrix SU, the
+similarities between each pair of items in the similarity matrix SI, the
+number of items consumed and/or rated by each user in the vector n_aval_u,
+the number of users who consumed and/or rated each item in the vector
+n_aval_i, the average rating value of each user in the vector averages_u, the
+average rating value received by each item in the vector averages_i, the
+number of items consumed in common by each pair of users in the matrix Int_U,
+and the number of users in common for each pair of items in the matrix Int_I.
+The class contains methods such as addNewUser, addNewEmptyUser, deleteUser,
+addNewItem, addNewEmptyItem, deleteItem, newRating and deleteRating, which
+modify the object's structure by altering users, items, or consumption data.
+The class also includes functions such as kClosestItems, topKUsers, and
+topKItems, which return items to recommend to a user or users to whom an item
+should be recommended. An object of the CF class is created using the
+CFBuilder function.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{MU}}{A utility matrix, matrix that contains all the users ratings. The rows comprise users and the columns, itens.}
+\item{\code{MU}}{The Utility Matrix, a matrix that contains all the users' ratings.
+The rows comprise users and the columns, items.}
 
-\item{\code{SU1}}{A superior triangular user similarity matrix that contains the similarities between users, calculated using Cosine similarity}
+\item{\code{SU}}{The user similarity matrix.}
 
-\item{\code{SU2}}{A superior triangular user similarity matrix that contains the similarities between users, calculated  using Pearson Correlation.}
+\item{\code{SI}}{The item similarity matrix}
 
-\item{\code{SI1}}{A superior triangular item similarity matrix that contains the similarities between items, calculated  using Cosine similarity.}
+\item{\code{IntU}}{A symmetric matrix that records the number of users in common who
+consumed each pair of items.}
 
-\item{\code{SI2}}{A superior triangular item similarity matrix that contains the similarities between items, calculated using Adjusted Cosine similarity.}
+\item{\code{IntI}}{A symmetric matrix that records the number of items in common that
+have been consumed by each pair of users.}
 
-\item{\code{averages_u}}{A vector that contains the averages of users ratings.}
+\item{\code{averages_u}}{A vector that contains the averages of users' ratings.}
 
-\item{\code{averages_i}}{A vector that contains the averages of item ratings.}
+\item{\code{averages_i}}{A vector that contains the averages of items' ratings.}
 
-\item{\code{n_aval_u}}{A vector that contains the numbers of ratings performed by each user.}
+\item{\code{n_aval_u}}{A vector that stores the number of items rated by each user.}
 
-\item{\code{n_aval_i}}{A vector that contains the numbers of ratings received for each item.}
+\item{\code{n_aval_i}}{A vector that stores the number of users who consumed each
+item.}
+
+\item{\code{datatype}}{A character that indicates the type of data, which can be
+either "consumption" or "rating".}
 }}
 
 \section{Methods}{
 
 \describe{
-\item{\code{addnewemptyitem(Id_i)}}{Adds a new item without ratings. The object CF matrices and vectors will be updated. Id_i : a character, an item ID.
-If you want to add more items, you can use lists where Id_i is a list of characters.}
+\item{\code{addnewemptyitem(Id_i)}}{A method that adds a new item that has not yet been consumed by any 
+existing user in the recommendation system.
+Id_i: a character, the new item ID;
+To add more than one new user, lists can be used. 
+Id_i: a list of characters;}
 
-\item{\code{addnewemptyuser(Id_u)}}{Adds a new user without ratings. The object CF matrices and vectors will be updated. Id_u : a character, a user ID.
-If you want to add more users, you can use lists, where Id_u is a list of characters.}
+\item{\code{addnewemptyuser(Id_u)}}{A method that adds a new user who has not yet consumed any existing items 
+in the recommendation system. 
+Id_u: a character, the new user ID;
+To add more than one new user, lists can be used. 
+Id_u: a list of characters;}
 
-\item{\code{addnewitem(Id_i, Ids_u, r)}}{Adds a new item that has been rated by one or more users. The object CF matrices and vectors will be updated. Id_i : a character, an item ID; Ids_u : a character vector, a user IDs; r : a vector with its respective ratings.
-If you want to add more items, you can use lists, where Id_i is a list of characters; Ids_u is a list of vectors of characters; r is a list of vectors of ratings. }
+\item{\code{addnewitem(Id_i, Ids_u, r = NULL)}}{A method that adds a new item that has been consumed by already existing 
+users in the recommendation system.
+Id_i: a character, the new item ID;
+Ids_u: a character vector, the IDs of the users who consumed the new item;
+r: a numeric vector, the ratings given by the users for the new item 
+(only for ratings datatype).
+To add more than one new item, lists can be used. 
+Id_i: a list of characters; 
+Ids_u: a list of characters vectors; 
+r: list of numeric vectors.}
 
-\item{\code{addnewuser(Id_u, Ids_i, r)}}{Adds a new user who rated one or more items. The object CF matrices and vectors will be updated. Id_u : a character, a user ID; Ids_i : a character vector, item IDs; r : a vector with its respective ratings.
-If you want to add more users, you can use lists, where Id_u: list of characters; Ids_i: list of vectors of characters; r: list of vectors of ratings. }
+\item{\code{addnewuser(Id_u, Ids_i, r = NULL)}}{A method that adds a new user who consumed items already existing in the 
+recommendation system. 
+Id_u: a character, the new user ID;
+Ids_i: a character vector, the IDs of the items consumed by the user;
+r: a numeric vector, the ratings of the items consumed by the new user 
+(only for ratings datatype).
+To add more than one new user, lists can be used. 
+Id_u: a list of characters; 
+Ids_i: a list of characters vectors; 
+r: list of numeric vectors.}
 
-\item{\code{addsimilarity(sim_user = "none", sim_item = "none")}}{Adds new methodologies even after the construction and modification of the CF object used. The matrices of similarities representing each requested methodology will be added.
-sim_user: a methodology used to estimate the rating by users similarity. Can be 'cos','pearson','both' or 'none'. If it equals 'cos' (Cosine Similarity), the SU1 will be built.
-If it equals 'pearson' (Pearson Similarity), the SU2 will be built. If it equals 'both', the SU1 and SU2 will be built. If it equals 'none', nothing will be built. sim_item: A
-methodology used to estimate the rating by itens similarity. Can be 'cos','adjcos','both' or 'none'. If it equals 'cos' (Cosine Similarity), the SI1 will be built. If it equals
-'adjcos' (Adjusted Cosine Similarity), the SI2 will be built. If it equals 'both', the SI1 and SI2 will be built. If it equals 'none', nothing will be built.}
+\item{\code{changerating(Id_u, Id_i, r = NULL)}}{A method that changes a rating or consumption of a user for an item 
+that has already been rated by them.
+Id_u: a character, the user ID;
+Id_i: a character, the item ID;
+r: a numeric, the rating given by Id_u for Id_i (only for ratings 
+datatype).
+To change more than one ratings, lists can be used. 
+Id_u: a list of characters; 
+Id_i: a list of characters; 
+r: list of numeric vectors.}
 
-\item{\code{changerating(Id_u, Id_i, r)}}{Changes the rating from user Id_u to item Id_i. The object CF matrices and vectors will be updated. Id_u : A character, a user ID; Id_i : A character, an item ID; r : The new rating.
-If you want to change more ratings, you can use lists where Id_u and Id_i are lists of characters and r is a list of ratings.}
+\item{\code{deleteitem(Id_i)}}{A method that deletes an item from the recommendation system. 
+Id_i: a character, the item ID;
+To delete more than one item, lists can be used. 
+Id_i: a list of characters;}
 
-\item{\code{deleteitem(Id_i)}}{Deletes an already registered item. The object CF matrices and vectors will be updated. Id_i : a character, a item ID that will be deleted.
-If you want to delete more items, you can use lists, where Id_i is a list of characters.}
+\item{\code{deleterating(Id_u, Id_i)}}{A method that deletes a existing rating or consumption of a user for an 
+item.
+Id_u: a character, the user ID;
+Id_i: a character, the item ID;
+To deletes more than one ratings, lists can be used. 
+Id_u: a list of characters; 
+Id_i: a list of characters.}
 
-\item{\code{deleterating(Id_u, Id_i)}}{Deletes the rating from user Id_u to item Id_i. The object CF matrices and vectors will be updated. Id_u : A character, a user ID; Id_i : A character, an item ID.
-If you want to delete more ratings, you can use lists, where Id_u and Id_i are lists of characters.}
+\item{\code{deleteuser(Id_u)}}{A method that deletes an user from the recommendation system. 
+Id_u: a character, the user ID;
+To delete more than one user, lists can be used. 
+Id_u: a list of characters;}
 
-\item{\code{deleteuser(Id_u)}}{Deletes an already registered user. The object CF matrices and vectors will be updated. Id_u : A character, a user ID that will be deleted.
-If you want to delete more users, you can use lists where Id_u is a list of characters.}
-
-\item{\code{estimaterating(
-  Id_u,
-  Id_i,
-  type,
-  neighbors = 5,
-  similarity = ifelse(type == "user", "pearson", "adjcos")
-)}}{A function that returns the estimated rating for the evaluation of item Id_i by user Id_u. The recommendation can be made through similarity between users, when type = 'user', and also through the similarity between items, when type = 'item'.
-Id_u: A character, a user ID; Id_i: A character, an item ID; type: A character string, 'user' or 'item'; neighbors: Number of similarities used for the estimates.(default=5); similarity: the methodology used to estimate the rating. If type = 'user', must be one of 'cos', for cosine similarity, or 'pearson' (default), for pearson similarity. If type='item', must be one of 'cos', for cosine similarity, or 'adjcos' (default), for adjusted cosine similarity. This choice can alter the way the
- estimate is calculated.}
-
-\item{\code{kclosestitems(Id_i, k = 5, similarity = "adjcos")}}{A function that returns the k items most similar to an item. Id_i : A Character, a Item ID; k : Number of items most similar to item Id_i (deafult = 5);
-similarity:  the methodology used to estimate the rating. Must be one of 'cos', for cosine similarity, or 'adjcos' (default), for adjusted cosine similarity. This choice can alter the way the
- estimate is calculated.}
-
-\item{\code{newrating(Id_u, Id_i, r)}}{Adds a new rating from user Id_u to item Id_i.The object CF matrices and vectors will be updated. Id_u : a character, a user ID; Id_i : a character, an item ID; r : the rating.
-If you want to add more ratings, you can use lists, where Id_u and Id_i are lists of characters and r is a list of ratings.}
-
-\item{\code{recommend(
-  Id_u,
-  Id_i,
-  type,
-  neighbors = 5,
-  cuts = 3.5,
-  similarity = ifelse(type == "user", "pearson", "adjcos")
-)}}{A function that returns True if user Id_u will like item Id_i or returns FALSE, otherwise. The recommendation can be made through similarity between users, when type = 'user', as well as through the similarity between items, when type = 'item'.
-Id_u : a  character, a User ID; Id_i : a character, an Item ID; type: a character string, 'user' or 'item'; neighbors: number of similarities used for to estimates (default = 5); cuts: cut score designated to determine if it is recommended (default=3.5);
-similarity: the methodology used to estimate the rating. If type = 'user', must be one of 'cos', for cosine similarity, or 'pearson' (default), for pearson similarity. If type='item', must be one of 'cos', for cosine similarity, or 'adjcos' (default), for adjusted cosine similarity. This choice can alter the way the
-estimate is calculated.}
-
-\item{\code{topkitems(
-  Id_u,
-  k = 5,
-  type,
-  neighbors = 5,
-  cuts = 3.5,
-  similarity = ifelse(type == "user", "pearson", "adjcos")
-)}}{A function that recommends k items for an Id_u user. The recommendation can be made through similarity between users, when type = 'user', as well as through similarity between items,
-when type = 'item'. Id_u : a character, a User ID; k : number of recommendations (default=5); type: a character string, 'user' or 'item'; neighbors: number of similarities used for the estimates(default=5);
-cuts: cut score designated to determine if it is recommended (default = 3.5); similarity: the methodology used to estimate the rating. If type = 'user', must be one of 'cos', for cosine similarity,
-or 'pearson' (default), for pearson similarity. If type='item', must be one of 'cos', for cosine similarity, or 'adjcos' (default), for adjusted cosine similarity. This choice can alter the way the
-estimate is calculated.}
-
-\item{\code{topkusers(
-  Id_i,
-  k = 5,
-  type,
-  neighbors = 5,
-  cuts = 3.5,
-  similarity = ifelse(type == "user", "pearson", "adjcos")
-)}}{A function that indicates the k users who will like the item Id_i.The recommendation can be made through similarity between users, when type = 'user', as well as through similarity between
-items, when type = 'item'. Id_i : A Character, a Item ID; k : Number of recommendations (default=5); type: A character string, 'user' or 'item'; neighbors: Number of similarities used for
-the estimates (default=5); cuts: Cut score designated to determine if it is recommended (default=3.5);   similarity: the methodology used to estimate the rating. If type = 'user', must be one of 'cos', for cosine similarity, or 'pearson' (default), for pearson similarity. If type='item', must be one of 'cos', for cosine similarity, or 'adjcos' (default), for adjusted cosine similarity. This choice can alter the way the
- estimate is calculated.}
+\item{\code{newrating(Id_u, Id_i, r = NULL)}}{A method that adds a new rating or consumption of an existing user for
+an existing item that had not yet been rated by them.
+Id_u: a character, the user ID;
+Id_i: a character, the item ID;
+r: a numeric, the rating given by Id_u for Id_i (only for ratings 
+datatype).
+To add more than one new ratings, lists can be used. 
+Id_u: a list of characters; 
+Id_i: a list of characters; 
+r: list of numeric vectors.}
 }}
 
 \examples{
-ratings<-movies[1:1000,]
-objectCF<-CFbuilder(Data = ratings, sim_user="pearson", sim_item="adjcos")
-objectCF$addsimilarity(sim_user="cos",sim_item="cos")
-objectCF$MU
-objectCF$SU1
-objectCF$SU2
-objectCF$SI1
-objectCF$SI2
-objectCF$averages_u
-objectCF$averages_i
-objectCF$n_aval_u
-objectCF$n_aval_i
-objectCF$addnewuser(Id_u = "Thiago",Ids_i = "The Hunger Games: Catching Fire",r = 5)
-objectCF$addnewemptyuser(Id_u = "Jessica")
-objectCF$deleteuser(Id_u = "Jessica")
-objectCF$addnewitem(Id_i = "Avengers: Endgame",Ids_u = c("1","2"),r = c(5,3))
-objectCF$addnewemptyitem(Id_i = "Star Wars")
-objectCF$deleteitem(Id_i="Star Wars")
-objectCF$newrating(Id_u = "1", Id_i = "Till Luck Do Us Part 2",r = 2)
-objectCF$recommend(Id_u = "2", Id_i = "Iron Man 3", type = "user")
-objectCF$kclosestitems(Id_i = "Iron Man 3", k = 3)
-objectCF$topkitems(Id_u = "3",k = 3, type = "user")
-objectCF$topkusers(Id_i = "Thor: The Dark World", k = 3,type = "item")
-objectCF$estimaterating(Id_u = "2",Id_i = "Iron Man 3", type = "user")
-objectCF$deleterating("1","Brazilian Western")
-objectCF$changerating("1","Wreck-It Ralph",2)
+objectCF_r <- CFbuilder(Data = movies[1:500,], Datatype = "ratings", 
+similarity = "pearson")
+dim(objectCF_r$MU)
+colnames(objectCF_r$MU) #movies Id
+rownames(objectCF_r$MU) #users Id
+dim(objectCF_r$SU)
+dim(objectCF_r$SI)
+objectCF_r$averages_u
+hist(objectCF_r$averages_u)
+objectCF_r$averages_i
+hist(objectCF_r$averages_i)
+objectCF_r$n_aval_u
+summary(objectCF_r$n_aval_u)
+barplot(table(objectCF_r$n_aval_u))
+objectCF_r$n_aval_i
+summary(objectCF_r$n_aval_i)
+barplot(table(objectCF_r$n_aval_i))
+objectCF_r$addnewuser(Id_u = "newuser1", 
+Ids_i = "The Hunger Games: Catching Fire", r = 5)
+rownames(objectCF_r$MU) #users Id
+objectCF_r$n_aval_u["newuser1"]
+objectCF_r$averages_u["newuser1"]
+objectCF_r$addnewuser(Id_u = "newuser2",
+Ids_i = c("Frozen","Her","Iron Man 3"),r = c(2,4,3))
+rownames(objectCF_r$MU) #users Id
+objectCF_r$n_aval_u["newuser2"]
+objectCF_r$averages_u["newuser2"]
+objectCF_r$addnewuser(Id_u = list("newuser3","newuser4"),
+Ids_i = list(c("Lincoln","Monsters University","The Lego Movie","Frozen"),
+c("The Wolverine","The Lego Movie")),r = list(c(1,4,5,4),c(4,5)))
+rownames(objectCF_r$MU) #users Id
+objectCF_r$n_aval_u[c("newuser3","newuser4")]
+objectCF_r$averages_u[c("newuser3","newuser4")]
+objectCF_r$newrating(Id_u = list("newuser1","newuser1","newuser2","newuser4"),
+Id_i = list("The Lego Movie","Wreck-It Ralph","Fast & Furious 6",
+"12 Years a Slave"),r = list(4,5,4,2))
+objectCF_r$n_aval_u[c("newuser1","newuser2","newuser3","newuser4")]
+objectCF_r$averages_u[c("newuser1","newuser2","newuser3","newuser4")]
+objectCF_r$addnewitem(Id_i = "Oppenheimer",
+Ids_u = c("newuser1","newuser2","newuser3","newuser4","1","2","4","6","10",
+"11","20","32"),r = c(1,2,3,1,5,4,5,4,1,3,5,4))
+colnames(objectCF_r$MU)
+objectCF_r$n_aval_i["Oppenheimer"]
+objectCF_r$averages_i["Oppenheimer"]
+objectCF_c <- CFbuilder(Data = movies[1:500,-3], Datatype = "consumption", 
+similarity = "jaccard")
+dim(objectCF_c$MU)
+colnames(objectCF_c$MU) #movies Id
+rownames(objectCF_c$MU) #users Id
+dim(objectCF_c$SU)
+dim(objectCF_c$SI)
+objectCF_c$averages_u
+objectCF_c$averages_i
+objectCF_c$n_aval_u
+summary(objectCF_c$n_aval_u)
+barplot(table(objectCF_c$n_aval_u))
+objectCF_c$n_aval_i
+summary(objectCF_c$n_aval_i)
+barplot(table(objectCF_c$n_aval_i))
+objectCF_c$addnewuser(Id_u = "newuser1", 
+Ids_i = "The Hunger Games: Catching Fire")
+rownames(objectCF_c$MU) #users Id
+objectCF_c$n_aval_u["newuser1"]
+objectCF_c$addnewuser(Id_u = "newuser2",
+Ids_i = c("Frozen","Her","Iron Man 3"))
+rownames(objectCF_c$MU) #users Id
+objectCF_c$n_aval_u["newuser2"]
+objectCF_c$addnewuser(Id_u = list("newuser3","newuser4"),Ids_i = list(
+c("Lincoln","Monsters University","The Lego Movie","Frozen"),
+c("The Wolverine","The Lego Movie")))
+rownames(objectCF_c$MU)
+objectCF_c$n_aval_u[c("newuser3","newuser4")]
+objectCF_c$MU["newuser1","The Lego Movie"]
+objectCF_c$newrating(Id_u = list("newuser1","newuser1","newuser2","newuser4"),
+Id_i = list("The Lego Movie","Wreck-It Ralph","Fast & Furious 6",
+"12 Years a Slave"))
+objectCF_c$n_aval_u[c("newuser1","newuser2","newuser3","newuser4")]
+objectCF_c$averages_u[c("newuser1","newuser2","newuser3","newuser4")]
+objectCF_c$addnewitem(Id_i = "Oppenheimer",
+Ids_u = c("newuser1","newuser2","newuser3","newuser4","1","2","4","6","10",
+"11","20","32"),r = c(1,2,3,1,5,4,5,4,1,3,5,4))
+colnames(objectCF_c$MU)
+objectCF_c$n_aval_i["Oppenheimer"]
+objectCF_c$averages_i["Oppenheimer"]
 }
 \references{
 \itemize{
-\item LINDEN, G.; SMITH, B.; YORK, J. Amazon. com recommendations: Item-toitem collaborative filtering. Internet Computing, IEEE, v. 7, n. 1, p. 76-80,2003
-\item Aggarwal, C. C. (2016). Recommender systems (Vol. 1). Cham: Springer International Publishing.
-\item Leskovec, J., Rajaraman, A., & Ullman, J. D. (2020). Mining of massive data sets. Cambridge university press.
+\item LINDEN, G.; SMITH, B.; YORK, J. Amazon. com recommendations:
+Item-to-item collaborative filtering. Internet Computing, IEEE, v. 7, n. 1,
+p. 76-80,2003
+\item Aggarwal, C. C. (2016). Recommender systems (Vol. 1). Cham: Springer
+International Publishing.
+\item Leskovec, J., Rajaraman, A., & Ullman, J. D. (2020). Mining of massive
+data sets. Cambridge university press.
 }
 }
 \seealso{
 \code{\link[CFilt]{CFbuilder}}
 }
 \author{
-Thiago Lima, Jessica Kubrusly.
+Jessica Kubrusly
 }
