@@ -2,31 +2,58 @@
 % Please edit documentation in R/topkitems.R
 \name{topkitems}
 \alias{topkitems}
-\title{Recommendation Function}
+\title{Top-K Item Recommendation}
 \usage{
 topkitems(CF, Id_u, k = 10, type = "user")
 }
 \arguments{
-\item{CF}{A CF objec}
+\item{CF}{An object of class \code{CF}.}
 
-\item{Id_u}{the user Id}
+\item{Id_u}{A character string representing the user ID.}
 
-\item{k}{an integer}
+\item{k}{A positive integer indicating the number of items to recommend.
+Default is 10.}
 
-\item{type}{"user" or "item"}
+\item{type}{A character string indicating the recommendation strategy:
+\itemize{
+\item \code{"user"}: user-based collaborative filtering
+\item \code{"item"}: item-based collaborative filtering
+}}
+}
+\value{
+A character vector containing the IDs of the top-k recommended items.
 }
 \description{
-Functions that provide the top k items
-to be recommended to the user Id_u.
+Returns the top-k items to recommend for a given user based on a
+collaborative filtering model.
+}
+\details{
+For \code{type = "user"}, recommendations are computed based on similarities
+between users. For \code{type = "item"}, recommendations are computed based
+on similarities between items.
+
+Only items not yet consumed/rated by the user are considered.
 }
 \examples{
-objectCF_r <- CFbuilder(Data = movies[1:500,], Datatype = "ratings", 
-similarity = "pearson")
-u1 = rownames(objectCF_r$MU)[1]
-topkitems(CF=objectCF_r,Id_u = u1)
-u2 = rownames(objectCF_r$MU)[2]
-topkitems(CF=objectCF_r,Id_u = u2)
+data(movies, package = "CFilt")
+
+CF1 <- CFbuilder(movies[1:200, ], Datatype = "rating")
+
+# Recommend users for an item using user-based CF
+topkitems(CF1, Id_u = "1", k = 5, type = "user")
+
+# Recommend users for an item using item-based CF
+topkitems(CF1, Id_u = "1", k = 3, type = "item")
+
+CF2 <- CFbuilder(movies[1:200,-3])
+
+# Recommend users for an item using user-based CF
+topkitems(CF2, Id_u = "1", k = 5, type = "user")
+
+# Recommend users for an item using item-based CF
+topkitems(CF2, Id_u = "1", k = 3, type = "item")
+
 }
-\author{
-Jessica Kubrusly
+\seealso{
+\code{\link{CFbuilder}}, \code{\link{topkitems}}
 }

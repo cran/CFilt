@@ -1,6 +1,6 @@
 Package: CFilt
-Title: Recommendation by Collaborative Filtering
-Version: 0.3.0
+Title: Collaborative Filtering Models for Recommendation Systems
+Version: 1.0.0
 Authors@R: 
   c(person(given = "Jessica",
            family = "Kubrusly",
@@ -12,21 +12,23 @@ Authors@R:
            role = "ctb"),
     person(given = "Lucas",
            family = "Oliveira",
+           role = "ctb"),
+    person(given = "Caio",
+           family = "Salviano",
            role = "ctb"))
-Description: Provides methods and functions to implement a Recommendation 
-    System based on Collaborative Filtering Methodology. 
-    See Aggarwal (2016) <doi:10.1007/978-3-319-29659-3> for an overview.
-License: GPL-3
+Description: Implements collaborative filtering methods for recommendation systems based on user-item interaction data. Supports both explicit feedback (ratings) and implicit feedback (consumption). The package uses efficient sparse matrix representations and provides incremental updates for users, items, and similarity structures through an R6 class-based architecture. See Aggarwal (2016) <doi:10.1007/978-3-319-29659-3> for an overview.
+License: MIT + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 7.3.2
-LazyData: true
-Imports: methods
+Imports: Matrix, R6
+RoxygenNote: 7.3.3
 NeedsCompilation: no
-Packaged: 2024-10-02 11:47:28 UTC; PC
-Author: Jessica Kubrusly [aut, cre] (<https://orcid.org/0000-0003-0465-4629>),
+Packaged: 2026-04-25 00:02:20 UTC; jessi
+Author: Jessica Kubrusly [aut, cre] (ORCID:
+    <https://orcid.org/0000-0003-0465-4629>),
   Thiago Lima [ctb],
-  Lucas Oliveira [ctb]
+  Lucas Oliveira [ctb],
+  Caio Salviano [ctb]
 Maintainer: Jessica Kubrusly <jessicakubrusly@id.uff.br>
 Depends: R (>= 3.5.0)
 Repository: CRAN
-Date/Publication: 2024-10-04 16:40:06 UTC
+Date/Publication: 2026-04-25 02:10:02 UTC

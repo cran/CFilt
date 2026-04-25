@@ -1,98 +1,96 @@
-#' Recommendation Function
+#' @title Top-K Item Recommendation
 #'
-#' Functions that provide the top k items 
-#' to be recommended to the user Id_u.
-#' 
-#' @param CF A CF objec
-#' @param Id_u the user Id
-#' @param k an integer
-#' @param type "user" or "item"
-#' @export
-#' @author Jessica Kubrusly
+#' @description
+#' Returns the top-k items to recommend for a given user based on a
+#' collaborative filtering model.
+#'
+#' @param CF An object of class \code{CF}.
+#' @param Id_u A character string representing the user ID.
+#' @param k A positive integer indicating the number of items to recommend.
+#' Default is 10.
+#' @param type A character string indicating the recommendation strategy:
+#' \itemize{
+#'   \item \code{"user"}: user-based collaborative filtering
+#'   \item \code{"item"}: item-based collaborative filtering
+#' }
+#'
+#' @return A character vector containing the IDs of the top-k recommended items.
+#'
+#' @details
+#' For \code{type = "user"}, recommendations are computed based on similarities
+#' between users. For \code{type = "item"}, recommendations are computed based
+#' on similarities between items.
+#'
+#' Only items not yet consumed/rated by the user are considered.
+#'
 #' @examples
-#'objectCF_r <- CFbuilder(Data = movies[1:500,], Datatype = "ratings", 
-#'similarity = "pearson")
-#'u1 = rownames(objectCF_r$MU)[1]
-#'topkitems(CF=objectCF_r,Id_u = u1)
-#'u2 = rownames(objectCF_r$MU)[2]
-#'topkitems(CF=objectCF_r,Id_u = u2)
-
-
-topkitems = function(
-    CF,
-    Id_u,
-    k = 10,
-    type = "user") {
+#' data(movies, package = "CFilt")
+#'
+#' CF1 <- CFbuilder(movies[1:200, ], Datatype = "rating")
+#'
+#' # Recommend users for an item using user-based CF
+#' topkitems(CF1, Id_u = "1", k = 5, type = "user")
+#'
+#' # Recommend users for an item using item-based CF
+#' topkitems(CF1, Id_u = "1", k = 3, type = "item")
+#' 
+#' CF2 <- CFbuilder(movies[1:200,-3])
+#' 
+#' # Recommend users for an item using user-based CF
+#' topkitems(CF2, Id_u = "1", k = 5, type = "user")
+#'
+#' # Recommend users for an item using item-based CF
+#' topkitems(CF2, Id_u = "1", k = 3, type = "item")
+#'
+#' @seealso \code{\link{CFbuilder}}, \code{\link{topkitems}}
+#'
+#' @export
+topkitems <- function(CF, Id_u, k = 10, type = "user") {
   
-  MU         = CF$MU
-  SU         = CF$SU
-  SI         = CF$SI
-  IntI       = CF$IntI
-  IntU       = CF$IntU
-  averages_u = CF$averages_u
-  averages_i = CF$averages_i
-  n_aval_u   = CF$n_aval_u
-  n_aval_i   = CF$n_aval_i
-  datatype   = CF$datatype
-  similarity = CF$similarity
+  # Validations ----
+  if (!is.character(Id_u) || length(Id_u) != 1) {
+    stop("*** 'Id_u' must be a single character string. ***")
+  }
   
+  if (!is.numeric(k) || length(k) != 1 || k <= 0) {
+    stop("*** 'k' must be a single positive number. ***")
+  }
   
-  "A function that returns the top k most relevant items for the user.
-      Id_u: a character, the user ID;
-      k: a numeric, the number of items to be returned;
-      type: a character, 'user' or 'item'."
+  if (!type %in% c("user", "item")) {
+    stop("*** 'type' must be either 'user' or 'item'. ***")
+  }
   
-  M = nrow(MU)
-  N = ncol(MU)
+  MU <- CF$MU
   
-  i = which(rownames(MU) == Id_u) 
+  if (!Id_u %in% rownames(MU)) {
+    stop("*** This is not a valid user. ***")
+  }
   
+  i <- match(Id_u, rownames(MU))
+  
+  # Calculation ----
   if (type == "user") {
     
+    s <- CF$SU[, i]
+    notas <- Matrix::crossprod(s, MU) / sum(s)
+    notas <- as.numeric(notas)
     
-    s = matrix(SU[,i],nrow = 1,ncol = ncol(SU))
-    v = MU
-    v[is.na(v)] <- 0
+  } else {  # type == "item"
+    s <- CF$SI
+    v <- MU[i, , drop = FALSE]
     
-    notas = (s%*%v)/sum(s)
+    notas <- v %*% s
+    denom <- Matrix::colSums(s, na.rm = TRUE)
     
-    
-    if(datatype == "ratings"){
-      notas = notas[is.na(MU[i,])]
-      itens = colnames(MU)[is.na(MU[i,])]  
-    } else {
-      notas = notas[MU[i,]==0]
-      itens = colnames(MU)[MU[i,]==0]
-    }
-    
-    ind = order(notas,decreasing = T,na.last = T)[1:k]
-    return(itens[ind])  
-    
-  } else {
-    
-    if(type == "item"){
-      
-      s = SI
-      v = matrix(MU[i,],ncol=ncol(MU),nrow=1)
-      v[is.na(v)] <- 0
-      notas = (v%*%s)/(apply(s, MARGIN=2,FUN = "sum",na.rm = T))
-      
-      
-      if(datatype == "ratings"){
-        notas = notas[is.na(MU[i,])]
-        itens = colnames(MU)[is.na(MU[i,])]  
-      } else {
-        notas = notas[MU[i,]==0]
-        itens = colnames(MU)[MU[i,]==0]
-      }
-      
-      ind = order(notas,decreasing = T,na.last = T)[1:k]
-      return(itens[ind])
-      
-    } else {
-      stop("*** type must be user or item ***")
-    }
-    
+    denom[denom == 0] <- NA
+    notas <- as.numeric(notas) / denom
   }
+  
+  nao_avaliados <- MU[i, ] == 0
+  
+  notas <- notas[nao_avaliados]
+  itens <- colnames(MU)[nao_avaliados]
+  
+  ind <- head(order(notas, decreasing = TRUE, na.last = TRUE), k)
+  return(itens[ind])
 }
-

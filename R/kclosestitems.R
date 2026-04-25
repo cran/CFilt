@@ -1,63 +1,53 @@
-#' Recommendation Functions
+#' @title K Closest Items
 #'
-#' Functions that provide items to be recommended to system users.
-#' 
-#' @param CF A CF objec
-#' @param Id_i the item Id
-#' @param k an integer
-#' @export
-#' @author Jessica Kubrusly
+#' @description
+#' Returns the k most similar items to a given item based on the item-item
+#' similarity matrix of a collaborative filtering model.
+#'
+#' @param CF An object of class \code{CF} created by \code{\link{CFbuilder}}.
+#' @param Id_i A character string representing the item ID.
+#' @param k A positive integer indicating the number of similar items to return.
+#' Default is 10.
+#'
+#' @return A character vector containing the IDs of the k most similar items.
+#'
+#' @details
+#' The similarity between items is obtained from the item similarity matrix
+#' stored in \code{CF$SI}. The item itself is excluded from the result.
+#'
 #' @examples
-#'objectCF_r <- CFbuilder(Data = movies[1:500,], Datatype = "ratings", 
-#'similarity = "pearson")
-#'kclosestitems(CF = objectCF_r, Id_i = "The Lego Movie")
-#'kclosestitems(CF = objectCF_r, Id_i = "Lincoln", k=5)
+#' data(movies, package = "CFilt")
+#'
+#' CF1 <- CFbuilder(movies[1:200, ], Datatype = "rating")
+#'
+#' # Find the 5 items most similar to a given item
+#' kclosestitems(CF1, Id_i = "Frozen", k = 5)
+#'
+#' @seealso \code{\link{CFbuilder}}, \code{\link{topkitems}}, \code{\link{topkusers}}
+#'
+#' @export
+kclosestitems <- function (CF, Id_i, k = 10) {
 
-
-kclosestitems = function(
-    CF,
-    Id_i,
-    k = 10) {
-  
-  
-  MU         = CF$MU
-  SU         = CF$SU
-  SI         = CF$SI
-  IntI       = CF$IntI
-  IntU       = CF$IntU
-  averages_u = CF$averages_u
-  averages_i = CF$averages_i
-  n_aval_u   = CF$n_aval_u
-  n_aval_i   = CF$n_aval_i
-  datatype   = CF$datatype
-  similarity = CF$similarity
-  
-  
-  "A function that returns the k most similar items to the item Id_i.
-      Id_i: a character, the item ID;
-      k: a numeric, the number of items to be returned."
-  
-  if (!is.character(Id_i)) {
-    stop("*** Id_i must be a character.  ***")
+  # Validations ----
+  if (!is.character(Id_i) || length(Id_i) != 1) {
+    stop("*** 'Id_i' must be a single character string. ***")
   }
-  if (!is.integer(k) &&
-      k <= 0) {
-    stop("*** k must be a positive number ***")
+  if (!is.numeric(k) || length(k) != 1 || k <= 0) {
+    stop("*** 'k' must be a single positive number. ***")
   }
-  
-  
-  M = nrow(MU)
-  N = ncol(MU)
-  
-  encontrou_j = Id_i %in%colnames(MU)
-  if(encontrou_j){
-    j = which(colnames(MU) == Id_i)   
-  } else {
+  if (!(Id_i %in% colnames(CF$MU))) {
     stop("*** This is not a valid item. ***")
   }
-  
-  s = SI[,j]
-  s[j] = 0
-  ind = order(s,decreasing = T,na.last = T)[1:k]
+
+  # Calculation ----
+  MU <- CF$MU
+  SI <- CF$SI
+
+  j <- match(Id_i, colnames(MU))
+
+  s <- SI[, j]
+  s[j] <- 0
+  ind <- head(order(s, decreasing = T, na.last = NA), k)
+
   return(colnames(SI)[ind])
 }

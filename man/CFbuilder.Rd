@@ -2,59 +2,50 @@
 % Please edit documentation in R/CFbuilder.R
 \name{CFbuilder}
 \alias{CFbuilder}
-\title{The constructor function of the CFilt class.}
+\title{Build a Collaborative Filtering Object}
 \usage{
-CFbuilder(Data,Datatype,similarity)
-
 CFbuilder(
-Data,
-Datatype = ifelse(ncol(Data)==2,"consumption","ratings"),
-similarity = ifelse(Datatype == "consumption","jaccard","pearson")
+  Data,
+  Datatype = ifelse(ncol(Data) == 2, "consumption", "rating"),
+  similarity = ifelse(Datatype == "consumption", "jaccard", "pearson")
 )
 }
 \arguments{
-\item{Data}{a dataframe with 2 or 3 columns. The first column indicates the
-user ID, the second the item ID and the third the rating (only if
-Datatype = 'rating').}
+\item{Data}{A data.frame containing:
+\itemize{
+\item 2 columns: (user, item) for consumption data
+\item 3 columns: (user, item, rating) for rating data
+}}
 
-\item{Datatype}{a character that indicates the data type: 'rating' or
-'consumption'.}
+\item{Datatype}{A character string indicating the type of data:
+\code{"consumption"} or \code{"rating"}.
+Default is inferred from number of columns in \code{Data}.}
 
-\item{similarity}{a character that indicates the similarity type.
-For 'datatype='ratings', 'cossine' or 'person'. For datatype='consumption',
-'jaccard'.}
+\item{similarity}{A character string indicating the similarity measure:
+\itemize{
+\item \code{"jaccard"} for consumption data
+\item \code{"pearson"} or \code{"cosine"} for rating data
+}
+Default is chosen based on \code{Datatype}.}
 }
 \value{
-a CF class object.
+An object of class \code{CF}.
 }
 \description{
-The constructor function of the CFilt class.
+Creates an object of class \code{CF} from a dataset of user-item interactions.
+The dataset can represent either explicit ratings or implicit consumption.
 }
 \examples{
-CF1 <- CFbuilder(Data = movies[1:300,], Datatype = "ratings", 
-similarity = "pearson") #or
+data(movies, package = "CFilt")
+# --- Rating data ---
+CF1 <- CFbuilder(Data = movies[1:300,],Datatype = "rating",
+similarity = "pearson")
 CF1_ <- CFbuilder(Data = movies[1:300,])
-CF2 <- CFbuilder(Data = movies[1:300,], Datatype = "ratings", 
-similarity = "cosine") #or
-CF2_ <- CFbuilder(Data = movies[1:300,], similarity = "cosine")
-CF3 <- CFbuilder(Data = movies[1:300,-3], Datatype = "consumption", 
-similarity = "jaccard") #or
+CF2 <- CFbuilder(Data = movies[1:300,],Datatype = "rating",
+similarity = "cosine")
+CF2_ <- CFbuilder(Data = movies[1:300,],similarity = "cosine")
+# --- Consumption data ---
+CF3 <- CFbuilder(Data = movies[1:300,-3],Datatype = "consumption",
+similarity = "jaccard")
 CF3_ <- CFbuilder(Data = movies[1:300,-3])
 }
-\references{
-LINDEN, G.; SMITH, B.; YORK, J. Amazon. com recommendations: Item-to-item
-collaborative filtering. Internet Computing, IEEE, v. 7, n. 1, p. 76-80,2003
-}
-\seealso{
-\code{\link[CFilt]{CF-class}}
-}
-\author{
-Jessica Kubrusly
-}
-\keyword{"Collaborative}
-\keyword{"Cosine}
-\keyword{"Jaccard}
-\keyword{"Pearson}
-\keyword{Filtering"}
-\keyword{Silimarity"}
-\keyword{Similarity"}

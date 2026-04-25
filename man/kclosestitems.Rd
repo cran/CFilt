@@ -2,26 +2,38 @@
 % Please edit documentation in R/kclosestitems.R
 \name{kclosestitems}
 \alias{kclosestitems}
-\title{Recommendation Functions}
+\title{K Closest Items}
 \usage{
 kclosestitems(CF, Id_i, k = 10)
 }
 \arguments{
-\item{CF}{A CF objec}
+\item{CF}{An object of class \code{CF} created by \code{\link{CFbuilder}}.}
 
-\item{Id_i}{the item Id}
+\item{Id_i}{A character string representing the item ID.}
 
-\item{k}{an integer}
+\item{k}{A positive integer indicating the number of similar items to return.
+Default is 10.}
+}
+\value{
+A character vector containing the IDs of the k most similar items.
 }
 \description{
-Functions that provide items to be recommended to system users.
+Returns the k most similar items to a given item based on the item-item
+similarity matrix of a collaborative filtering model.
+}
+\details{
+The similarity between items is obtained from the item similarity matrix
+stored in \code{CF$SI}. The item itself is excluded from the result.
 }
 \examples{
-objectCF_r <- CFbuilder(Data = movies[1:500,], Datatype = "ratings", 
-similarity = "pearson")
-kclosestitems(CF = objectCF_r, Id_i = "The Lego Movie")
-kclosestitems(CF = objectCF_r, Id_i = "Lincoln", k=5)
+data(movies, package = "CFilt")
+
+CF1 <- CFbuilder(movies[1:200, ], Datatype = "rating")
+
+# Find the 5 items most similar to a given item
+kclosestitems(CF1, Id_i = "Frozen", k = 5)
+
 }
-\author{
-Jessica Kubrusly
+\seealso{
+\code{\link{CFbuilder}}, \code{\link{topkitems}}, \code{\link{topkusers}}
 }
