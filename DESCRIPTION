@@ -1,6 +1,6 @@
 Package: CFilt
 Title: Collaborative Filtering Models for Recommendation Systems
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
   c(person(given = "Jessica",
            family = "Kubrusly",
@@ -20,9 +20,9 @@ Description: Implements collaborative filtering methods for recommendation syste
 License: MIT + file LICENSE
 Encoding: UTF-8
 Imports: Matrix, R6
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2026-04-25 00:02:20 UTC; jessi
+Packaged: 2026-05-15 22:38:40 UTC; jessi
 Author: Jessica Kubrusly [aut, cre] (ORCID:
     <https://orcid.org/0000-0003-0465-4629>),
   Thiago Lima [ctb],
@@ -31,4 +31,4 @@ Author: Jessica Kubrusly [aut, cre] (ORCID:
 Maintainer: Jessica Kubrusly <jessicakubrusly@id.uff.br>
 Depends: R (>= 3.5.0)
 Repository: CRAN
-Date/Publication: 2026-04-25 02:10:02 UTC
+Date/Publication: 2026-05-30 20:10:02 UTC

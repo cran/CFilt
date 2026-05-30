@@ -109,180 +109,191 @@ data sets. Cambridge university press.
 Jessica Kubrusly
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{MU}}{The Utility Matrix, a matrix that contains all the users' ratings.
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{MU}}{The Utility Matrix, a matrix that contains all the users' ratings.
 The rows comprise users and the columns, items.}
 
-\item{\code{SU}}{The user similarity matrix.}
+    \item{\code{SU}}{The user similarity matrix.}
 
-\item{\code{SI}}{The item similarity matrix}
+    \item{\code{SI}}{The item similarity matrix}
 
-\item{\code{IntU}}{A symmetric matrix that records the number of items in common
+    \item{\code{IntU}}{A symmetric matrix that records the number of items in common
 between pairs of users.}
 
-\item{\code{IntI}}{A symmetric matrix that records the number of users in common
+    \item{\code{IntI}}{A symmetric matrix that records the number of users in common
 between pairs of items.umber of items in common that}
 
-\item{\code{averages_u}}{A vector that contains the averages of users' ratings.}
+    \item{\code{averages_u}}{A vector that contains the averages of users' ratings.}
 
-\item{\code{averages_i}}{A vector that contains the averages of items' ratings.}
+    \item{\code{averages_i}}{A vector that contains the averages of items' ratings.}
 
-\item{\code{n_aval_u}}{A vector that stores the number of items rated by each user.}
+    \item{\code{n_aval_u}}{A vector that stores the number of items rated by each user.}
 
-\item{\code{n_aval_i}}{A vector that stores the number of users who consumed each
+    \item{\code{n_aval_i}}{A vector that stores the number of users who consumed each
 item.}
 
-\item{\code{datatype}}{A character that indicates the type of data, which can be
+    \item{\code{datatype}}{A character that indicates the type of data, which can be
 either "consumption" or "rating".}
 
-\item{\code{similarity}}{A character string indicating the similarity measure used.
+    \item{\code{similarity}}{A character string indicating the similarity measure used.
 It can be "pearson" or "cosine" for rating data, and "jaccard" for consumption data.}
 
-\item{\code{data_0}}{A data.frame containing the original dataset used to build the object.
+    \item{\code{data_0}}{A data.frame containing the original dataset used to build the object.
 This corresponds to the input data provided to CFbuilder and is stored for reference.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-CF-addnewemptyuser}{\code{CF$addnewemptyuser()}}
-\item \href{#method-CF-addnewemptyitem}{\code{CF$addnewemptyitem()}}
-\item \href{#method-CF-newrating}{\code{CF$newrating()}}
-\item \href{#method-CF-deleteuser}{\code{CF$deleteuser()}}
-\item \href{#method-CF-deleteitem}{\code{CF$deleteitem()}}
-\item \href{#method-CF-deleterating}{\code{CF$deleterating()}}
-\item \href{#method-CF-clone}{\code{CF$clone()}}
-}
+  \itemize{
+    \item \href{#method-CF-addnewemptyuser}{\code{CF$addnewemptyuser()}}
+    \item \href{#method-CF-addnewemptyitem}{\code{CF$addnewemptyitem()}}
+    \item \href{#method-CF-newrating}{\code{CF$newrating()}}
+    \item \href{#method-CF-deleteuser}{\code{CF$deleteuser()}}
+    \item \href{#method-CF-deleteitem}{\code{CF$deleteitem()}}
+    \item \href{#method-CF-deleterating}{\code{CF$deleterating()}}
+    \item \href{#method-CF-clone}{\code{CF$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CF-addnewemptyuser"></a>}}
 \if{latex}{\out{\hypertarget{method-CF-addnewemptyuser}{}}}
-\subsection{Method \code{addnewemptyuser()}}{
-Add a new empty user to the system.
+\subsection{\code{CF$addnewemptyuser()}}{
+  Add a new empty user to the system.
 This method creates a new user with no interactions.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CF$addnewemptyuser(Id_u)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CF$addnewemptyuser(Id_u)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns the updated object.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns the updated object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CF-addnewemptyitem"></a>}}
 \if{latex}{\out{\hypertarget{method-CF-addnewemptyitem}{}}}
-\subsection{Method \code{addnewemptyitem()}}{
-Add a new empty item to the system.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CF$addnewemptyitem(Id_i)}\if{html}{\out{</div>}}
+\subsection{\code{CF$addnewemptyitem()}}{
+  Add a new empty item to the system.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CF$addnewemptyitem(Id_i)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Id_i}}{A character string (or list of strings) representing item ID(s).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Id_i}}{A character string (or list of strings) representing item ID(s).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CF-newrating"></a>}}
 \if{latex}{\out{\hypertarget{method-CF-newrating}{}}}
-\subsection{Method \code{newrating()}}{
-Add a new rating or consumption.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CF$newrating(Id_u, Id_i, r = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{CF$newrating()}}{
+  Add a new rating or consumption.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CF$newrating(Id_u, Id_i, r = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
+      \item{\code{Id_i}}{A character string (or a list of strings) representing item ID(s).}
+      \item{\code{r}}{A numeric (or a list of numeric) for rating value(s) (only for rating data)}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
-
-\item{\code{Id_i}}{A character string (or a list of strings) representing item ID(s).}
-
-\item{\code{r}}{A numeric (or a list of numeric) for rating value(s) (only for rating data)}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CF-deleteuser"></a>}}
 \if{latex}{\out{\hypertarget{method-CF-deleteuser}{}}}
-\subsection{Method \code{deleteuser()}}{
-Delete a user from the system.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CF$deleteuser(Id_u)}\if{html}{\out{</div>}}
+\subsection{\code{CF$deleteuser()}}{
+  Delete a user from the system.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CF$deleteuser(Id_u)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CF-deleteitem"></a>}}
 \if{latex}{\out{\hypertarget{method-CF-deleteitem}{}}}
-\subsection{Method \code{deleteitem()}}{
-Delete an item from the system.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CF$deleteitem(Id_i)}\if{html}{\out{</div>}}
+\subsection{\code{CF$deleteitem()}}{
+  Delete an item from the system.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CF$deleteitem(Id_i)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Id_i}}{A character string (or a list of strings) representing item ID(s).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Id_i}}{A character string (or a list of strings) representing item ID(s).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CF-deleterating"></a>}}
 \if{latex}{\out{\hypertarget{method-CF-deleterating}{}}}
-\subsection{Method \code{deleterating()}}{
-Delete a rating or consumption.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CF$deleterating(Id_u, Id_i)}\if{html}{\out{</div>}}
+\subsection{\code{CF$deleterating()}}{
+  Delete a rating or consumption.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CF$deleterating(Id_u, Id_i)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
+      \item{\code{Id_i}}{A character string (or a list of strings) representing item ID(s).}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Id_u}}{A character string (or a list of strings) representing user ID(s).}
-
-\item{\code{Id_i}}{A character string (or a list of strings) representing item ID(s).}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CF-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-CF-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CF$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{CF$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CF$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

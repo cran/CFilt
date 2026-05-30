@@ -199,7 +199,7 @@ CFbuilder <- function(Data,
 
     if (obj_CF$similarity == "pearson") {
 
-      binary_MU <- sign(obj_CF$MU)
+      binary_MU <- abs(sign(obj_CF$MU))
       obj_CF$n_aval_u <- Matrix::rowSums(binary_MU)
       obj_CF$n_aval_i <- Matrix::colSums(binary_MU)
       obj_CF$averages_u <- Matrix::rowSums(obj_CF$MU)/obj_CF$n_aval_u
@@ -234,10 +234,28 @@ CFbuilder <- function(Data,
       pe_u <- ifelse(denv > 0, numv / denv, 0)
 
       obj_CF$SU <- Matrix::sparseMatrix(
-        i = s_u$i, j = s_u$j, x = pe_u,
-        dims = dim(numer_u), symmetric = TRUE,
+        i = s_u$i,
+        j = s_u$j,
+        x = pe_u,
+        dims = dim(numer_u),
+        symmetric = TRUE,
         dimnames = dimnames(numer_u)
       )
+      ##################################################
+      # corrigindo as entradas de SU que devem ser 1 pq as linhas sao iguais e as vezes da erro, principalmente quando as avaliacoes sao iguais as medias
+      # comparando quais linhas de MU sao iguais
+      assinatura <- apply(obj_CF$MU, 1, function(x){
+        ass = paste0(x, collapse = "|")
+        ass = gsub("0","NA",ass)
+        return(ass)
+      })
+      #A matriz Mat_linhas_iguais guarda 1 na posicao (i,j) se as linhas i e j de M_u sao iguais
+      Mat_linhas_iguais = outer(assinatura, assinatura, "==") * 1
+      linhas_iguais = which(Mat_linhas_iguais == 1, arr.ind = TRUE)
+
+      obj_CF$SU[cbind(linhas_iguais[,"row"], linhas_iguais[,"col"])] = 1
+      ##################################################
+
       obj_CF$IntU <- Matrix::tcrossprod(binary_MU)
 
       utils::setTxtProgressBar(pb, 3)
@@ -255,6 +273,7 @@ CFbuilder <- function(Data,
         dims = dim(obj_CF$MU),
         dimnames = dimnames(obj_CF$MU)
       )
+
       utils::setTxtProgressBar(pb, 1)
 
       MU_centered_i <- obj_CF$MU - M_i
@@ -274,6 +293,20 @@ CFbuilder <- function(Data,
         dims = dim(numer_i), symmetric = TRUE,
         dimnames = dimnames(numer_i)
       )
+      ##################################################
+      # corrigindo as entradas de SI que devem ser 1 pq as colunas de MU sao iguais e as vezes da erro, principalmente quando as avaliacoes sao iguais as medias
+      # comparando quais colunas de MU sao iguais
+      assinatura <- apply(obj_CF$MU, 2, function(x){
+        ass = paste0(x, collapse = "|")
+        ass = gsub("0","NA",ass)
+        return(ass)
+      })
+      #A matriz Mat_linhas_iguais guarda 1 na posicao (i,j) se as linhas i e j de M_u sao iguais
+      Mat_colunas_iguais = outer(assinatura, assinatura, "==") * 1
+      colunas_iguais = which(Mat_colunas_iguais == 1, arr.ind = TRUE)
+
+      obj_CF$SI[cbind(colunas_iguais[,"row"], colunas_iguais[,"col"])] = 1
+      ##################################################
       obj_CF$IntI <- Matrix::crossprod(binary_MU)
 
       utils::setTxtProgressBar(pb, 3)
@@ -283,7 +316,7 @@ CFbuilder <- function(Data,
     ## cosine ----
     else if (obj_CF$similarity == "cosine") {
 
-      binary_MU <- sign(obj_CF$MU)
+      binary_MU <- abs(sign(obj_CF$MU))
 
       ### SU ----
       message("Step 2 of 3: Building SU")
